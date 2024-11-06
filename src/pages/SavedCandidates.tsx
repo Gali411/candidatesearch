@@ -57,7 +57,6 @@ const SavedCandidates = () => {
                 <td>{user.location}</td>
                 <td>{user.email}</td>
                 <td>{user.company}</td>
-                <td>{user.bio}</td>
                 <td>
                   <button  className="reject-button"
                     onClick={() => rejectUser(index)}>➖</button>
