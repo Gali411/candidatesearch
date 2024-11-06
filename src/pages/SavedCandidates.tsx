@@ -1,38 +1,75 @@
 import { useState, useEffect } from 'react';
-import '/src/index.css'
+import '/src/index.css';
 
 const SavedCandidates = () => {
-  
-   const [savedUsers, setSavedUsers] = useState([]);
+  const [savedUsers, setSavedUsers] = useState([]);
 
-   const clearSavedUsers = () => {
+  const clearSavedUsers = () => {
     localStorage.removeItem('savedUsers');
     setSavedUsers([]);
-  };  
+  };
 
-   useEffect(() => {
+  const rejectUser = (index: number) => {
+    const updatedUsers = savedUsers.filter((_, i) => i !== index);
+    setSavedUsers(updatedUsers);
+    localStorage.setItem('savedUsers', JSON.stringify(updatedUsers));
+  };
+
+
+  useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('savedUsers') || '[]');
     setSavedUsers(saved);
   }, []);
 
   return (
-    <div>
+    <div className="table-container">
       <h1>Potential Candidates</h1>
       {savedUsers.length === 0 ? (
         <p>No saved candidates yet.</p>
       ) : (
-        <ul>
-          {savedUsers.map((user, index) => (
-            <li key={index}>
-              {user.avatar && <img src={user.avatar} alt={`${user.name}'s avatar`} width={50} />}
-              <p>Name: {user.name}</p>
-              <p>Username: {user.username}</p>
-              <p>Location: {user.location}</p>
-            </li>
-          ))}
-        </ul>
+        <table className="custom-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Location</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Bio</th>
+              <th>Reject</th>
+            </tr>
+          </thead>
+          <tbody>
+            {savedUsers.map((user: any, index) => (
+              <tr key={index}>
+                <td>
+                  {user.avatar && (
+                    <img
+                      src={user.avatar}
+                      alt={`${user.name}'s avatar`}
+                      className="avatar"
+                    />
+                  )}
+                </td>
+                <td>{user.name}</td>
+                <td>{user.username}</td>
+                <td>{user.location}</td>
+                <td>{user.email}</td>
+                <td>{user.company}</td>
+                <td>{user.bio}</td>
+                <td>
+                  <button  className="reject-button"
+                    onClick={() => rejectUser(index)}>➖</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
-      <button onClick={clearSavedUsers}>Clear All Saved Candidates</button>
+      <button onClick={clearSavedUsers} className="clear-button">
+        Clear All Saved Candidates
+      </button>
     </div>
   );
 };
